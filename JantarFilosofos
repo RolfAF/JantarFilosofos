@@ -1,0 +1,29 @@
+package com.mycompany.jantarfilosofos;
+
+import java.util.concurrent.Semaphore;
+
+public class JantarFilosofos {
+
+    public static void main(String[] args) throws InterruptedException {
+        Semaphore garfo1 = new Semaphore(1, true);
+        Semaphore garfo2 = new Semaphore(1, true);
+        Semaphore garfo3 = new Semaphore(1, true);
+        Semaphore garfo4 = new Semaphore(1, true);
+        Semaphore garfo5 = new Semaphore(1, true);
+        Thread filosofo1 = new Thread(new Filosofo(garfo1, garfo2, "   Socrates"));
+        Thread filosofo2 = new Thread(new Filosofo(garfo2, garfo3, "Aristoteles"));
+        Thread filosofo3 = new Thread(new Filosofo(garfo3, garfo4, "     Platao"));
+        Thread filosofo4 = new Thread(new Filosofo(garfo4, garfo5, "  Descartes"));
+        Thread filosofo5 = new Thread(new Filosofo(garfo5, garfo1, "  Nietzsche"));
+        filosofo1.start();
+        filosofo2.start();
+        filosofo3.start();
+        filosofo4.start();
+        filosofo5.start();
+        filosofo1.join();
+        filosofo2.join();
+        filosofo3.join();
+        filosofo4.join();
+        filosofo5.join();
+    }
+}
