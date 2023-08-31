@@ -1,0 +1,66 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.mycompany.jantarfilosofos;
+
+import java.util.Random;
+import java.util.concurrent.Semaphore;
+
+/**
+ *
+ * @author rolf
+ */
+public class Filosofo implements Runnable {
+    String nome;
+    Random random = new Random();
+    Semaphore garfoEsquerda;
+    Semaphore garfoDireita;
+    int contadorPensar = 1;
+    int contadorComer = 1;
+    int contador;
+    public Filosofo(Semaphore garfoEsq, Semaphore garfoDir, String nome) {
+        this.nome = nome;
+        this.garfoEsquerda = garfoEsq;
+        this.garfoDireita = garfoDir;
+    }
+
+    @Override
+    public void run() {
+        for(contador = 0; contador < 10; contador++){
+            pensar();
+            comer();
+        }
+    }
+    
+    public void pensar(){
+        System.out.println(nome+" esta pensando... (P x "+contadorPensar+")");
+        contadorPensar++;
+        try{
+            Thread.sleep(random.nextInt(3000));
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+    }
+    
+    public void comer(){
+        try{
+            if(garfoEsquerda.tryAcquire() && garfoDireita.tryAcquire()){
+                System.out.println(nome+" esta comendo...  (C x "+contadorComer+")");
+                contadorComer++;
+                try{
+                    Thread.sleep(random.nextInt(3000));
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }else{
+                contador--;
+            }
+        }finally{
+            garfoEsquerda.release();
+            garfoDireita.release();
+        }
+        
+    }
+    
+}
